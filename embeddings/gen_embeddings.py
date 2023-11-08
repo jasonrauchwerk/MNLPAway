@@ -1,3 +1,5 @@
+#run after translate_to_eng.py
+
 import pandas as pd
 from tqdm import trange
 from sentence_transformers import SentenceTransformer
@@ -28,7 +30,7 @@ def gen_embeddings(df, read_column):
     for i in data:
         embedding = model.encode(i)
         embeddings.apppend(embedding)
-        df[embeddings] = embeddings
+        df['embeddings'] = embeddings
 
                 
 def main():    
@@ -38,6 +40,8 @@ def main():
             gen_embeddings(data_df,'text_english')
         else:
             gen_embeddings(data_df,'text')
+    
+    save_data(data_df, data_path)
 
 
 if __name__ == '__main__':
