@@ -12,7 +12,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 class ICLRetriever(ICLRetrieverBase):
     # topk monolingual embeddings
     # topk multilingual embeddings
-    # topk translated embeddings
+
     
     def __init__(self, data):
         super().__init__(data)

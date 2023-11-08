@@ -25,8 +25,6 @@ lang_id_map = {
 
 
 class ICLRetriever(ICLRetrieverBase):
-    # topk monolingual embeddings
-    # topk multilingual embeddings
     # topk translated embeddings
     
     def __init__(self, data):
