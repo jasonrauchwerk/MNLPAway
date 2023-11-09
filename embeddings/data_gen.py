@@ -21,7 +21,9 @@ def save_data(df, path, language="combined"):
 #if language is english, use dev_monolingual
 
 # for other languages, use generated data
-#   'arabic', 'russian', 'chinese', 'indonesian', 'urdu', 'bulgarian', 'german'    
+#   'arabic', 'russian', 'chinese', 'indonesian', 'urdu', 'bulgarian', 'german'  
+
+# Will we have a source in the eval set?  
 for data_path in glob.glob('data/*multilingual.jsonl'):
     df = read_data(data_path)
     save_data(df[df['source']=='arabic'], data_path, 'arabic')
