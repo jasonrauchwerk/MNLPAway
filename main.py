@@ -3,6 +3,7 @@ import re
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import plac
+from tqdm import tqdm
 
 from retrievers.ICLRetrieverBM25 import ICLRetrieverBM25Monolingual, ICLRetrieverBM25Translated
 from retrievers.ICLRetrieverRandom import ICLRetrieverRandom
@@ -27,9 +28,11 @@ def extract_label(text):
         return -1
 
 def main(retriever_name: str, test_file: str, output_file: str, k: int, in_language: bool):
+    in_language = False
     checkpoint = "bigscience/bloomz-3b"
     tokenizer = AutoTokenizer.from_pretrained(checkpoint)
     model = AutoModelForCausalLM.from_pretrained(checkpoint, torch_dtype="auto", device_map="auto")
+    print("Model and Tokenizer Loaded")
 
     retriever_dict = {"BM25Monolingual"       : ICLRetrieverBM25Monolingual,
                       "BM25Translated"        : ICLRetrieverBM25Translated,
@@ -46,13 +49,13 @@ def main(retriever_name: str, test_file: str, output_file: str, k: int, in_langu
                 train_data = [json.loads(line) for line in f]
             retrievers[language] = retriever_dict[retriever_name](train_data)
     else:  # cross-lingual
-        train_file = "data/SubtaskA/subtaskA_train_multilingual_combined.jsonl"
+        train_file = "data/SubtaskA/subtaskA_train_multilingual_processed_combined.jsonl"
         with open(train_file, 'r') as f:
             train_data = [json.loads(line) for line in f]
         retriever = retriever_dict[retriever_name](train_data)
 
     with open(test_file, 'r') as f_in, open(output_file, 'w') as f_out:
-        for line in f_in:
+        for line in tqdm(f_in):
             datum = json.loads(line)
             text = datum['text']
 

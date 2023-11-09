@@ -1,0 +1,1 @@
+python -u main.py Random data/SubtaskA/subtaskA_train_multilingual_processed_combined.jsonl data/SubtaskA/outputs/subtaskA_train_multilingual_processed_combined.jsonl 1 False
