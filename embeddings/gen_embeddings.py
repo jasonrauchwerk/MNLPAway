@@ -28,7 +28,7 @@ def gen_embeddings(df, read_column, write_column):
     model = SentenceTransformer(model_name).to(device) 
     data = list(df[read_column])
     embeddings = []
-    for i in data:
+    for i in tqdm(data, ncols=100, leave=False):
         embedding = model.encode(i)
         embeddings.apppend(embedding)
         df[write_column] = embeddings

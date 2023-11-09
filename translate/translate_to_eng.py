@@ -5,11 +5,12 @@ import pandas as pd
 import json
 import glob
 
-# model_name = 'facebook/nllb-200-distilled-600M'
+model_name = 'facebook/nllb-200-distilled-600M'
 # model_name = 'facebook/nllb-200-1.3B'
-model_name = 'facebook/nllb-200-3.3B'
+# model_name = 'facebook/nllb-200-3.3B'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-batch_size = 16
+batch_size = 32
+model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
 
 lang_id_map = {
     'arabic'     : 'acm_Arab',
@@ -34,7 +35,6 @@ def save_data(df, path):
             f.write(json_str+'\n')
 
 def translate(data_df, src_lang):
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
     tokenizer = AutoTokenizer.from_pretrained(model_name, src_lang=src_lang)
 
     translations = []
