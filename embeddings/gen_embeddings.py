@@ -1,7 +1,7 @@
 #run after translate_to_eng.py
 
 import pandas as pd
-from tqdm import trange
+from tqdm import trange, tqdm
 from sentence_transformers import SentenceTransformer
 import torch
 import json
@@ -30,7 +30,7 @@ def gen_embeddings(df, read_column, write_column):
     embeddings = []
     for i in tqdm(data, ncols=100, leave=False):
         embedding = model.encode(i)
-        embeddings.apppend(embedding)
+        embeddings.append(embedding)
         df[write_column] = embeddings
 
                 
