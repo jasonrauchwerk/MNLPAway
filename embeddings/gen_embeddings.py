@@ -31,7 +31,7 @@ def gen_embeddings(df, read_column, write_column):
     for i in tqdm(data, ncols=100, leave=False):
         embedding = model.encode(i)
         embeddings.append(embedding)
-        df[write_column] = embeddings
+    df[write_column] = embeddings
 
                 
 def main(data_file: str):    
