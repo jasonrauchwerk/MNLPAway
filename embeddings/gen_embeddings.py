@@ -6,6 +6,7 @@ from sentence_transformers import SentenceTransformer
 import torch
 import json
 import glob
+import plac
 
 
 model_name = 'sentence-transformers/stsb-xlm-r-multilingual'
@@ -23,28 +24,25 @@ def save_data(df, path):
             json_str = row.to_json()
             f.write(json_str+'\n')
 
-def gen_embeddings(df, read_column):
+def gen_embeddings(df, read_column, write_column):
     model = SentenceTransformer(model_name).to(device) 
     data = list(df[read_column])
     embeddings = []
     for i in data:
         embedding = model.encode(i)
         embeddings.apppend(embedding)
-        df['embeddings'] = embeddings
+        df[write_column] = embeddings
 
                 
-def main():    
-    for data_path in glob.glob('data/*.jsonl'):
-        data_df = read_data(data_path)
-        if 'translated' in data_path:
-            gen_embeddings(data_df,'text_english')
-        else:
-            gen_embeddings(data_df,'text')
-    
-    save_data(data_df, data_path)
+def main(data_file: str):    
+    data_df = read_data(data_file)
+    gen_embeddings(data_df,'text_english', 'text_english_embeddings')
+    gen_embeddings(data_df,'text', 'text_embeddings')
+
+    save_data(data_df, data_file)
 
 
 if __name__ == '__main__':
-    main() 
+    plac.call(main) 
     
     

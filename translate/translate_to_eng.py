@@ -25,11 +25,10 @@ def read_data(path):
     with open(path, 'r', encoding='utf-8') as f:
         data = [json.loads(line) for line in f]
     df = pd.DataFrame(data)
-    df['text_english'] = df['text']
     return df
 
 def save_data(df, path):
-    with open(path.replace('.jsonl', '_translated.jsonl'), 'w', encoding='utf-8') as f:
+    with open(path.replace('.jsonl', '_processed.jsonl'), 'w', encoding='utf-8') as f:
         for _, row in df.iterrows():
             json_str = row.to_json()
             f.write(json_str+'\n')
@@ -52,16 +51,15 @@ def translate(data_df, src_lang):
     data_df['text_english'] = translations
     return data_df
 
-def main():
-    for data_path in glob.glob('data/*lingual.jsonl'):
-        print(f"Processing {data_path}")
-        data_df = read_data(data_path)
+def main(data_path):
+    print(f"Processing {data_path}")
+    data_df = read_data(data_path)
+    data_df['text_english'] = data_df['text']
 
-        if 'multilingual' in data_path:
-            for lang, lang_id in lang_id_map.items():
-                data_df[data_df['source']==lang] = translate(data_df[data_df['source']==lang], lang_id)
+    for lang, lang_id in lang_id_map.items():
+        data_df[data_df['source']==lang] = translate(data_df[data_df['source']==lang], lang_id)
 
-        save_data(data_df, data_path)
+    save_data(data_df, data_path)
         
 if __name__ == '__main__':
     main()

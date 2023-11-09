@@ -34,7 +34,7 @@ class ICLRetrieverTranslationEmbeddings(ICLRetrieverBase):
         self.corpus_embedding_map = {datum['embedding']:(datum['text']) for datum in data}
         self.data_embedding         = [datum['embedding'] for datum in data]
     
-    def _gen_embeddings(self, sentence, input_language):
+    def _gen_embeddings(self, sentence):
         model = SentenceTransformer(embeddings_model_name).to(device) 
         embeddings = model.encode(sentence)
         return embeddings
