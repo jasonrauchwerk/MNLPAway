@@ -24,7 +24,7 @@ lang_id_map = {
 }
 
 
-class ICLRetriever(ICLRetrieverBase):
+class ICLRetrieverTranslationEmbeddings(ICLRetrieverBase):
     # topk translated embeddings
     
     def __init__(self, data):

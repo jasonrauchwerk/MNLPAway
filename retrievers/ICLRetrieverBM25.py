@@ -4,7 +4,7 @@ import random
 
 from .ICLRetrieverBase import ICLRetrieverBase
 
-class ICLRetriever(ICLRetrieverBase):
+class ICLRetrieverBM25(ICLRetrieverBase):
     # random monolingual
     # random multilingual
     # bm25 monolingual

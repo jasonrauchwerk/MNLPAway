@@ -9,7 +9,7 @@ from .ICLRetrieverBase import ICLRetrieverBase
 model_name = 'sentence-transformers/stsb-xlm-r-multilingual'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-class ICLRetriever(ICLRetrieverBase):
+class ICLRetrieverEmbeddings(ICLRetrieverBase):
     # topk monolingual embeddings
     # topk multilingual embeddings
 

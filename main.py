@@ -1,5 +1,7 @@
 # pip install -q transformers accelerate
-from retrievers.ICLRetrieverBM25 import ICLRetriever
+from retrievers.ICLRetrieverBM25 import ICLRetrieverBM25
+from retrievers.ICLRetrieverEmbeddings import ICLRetrieverEmbeddings
+from retrievers.ICLRetrieverTranslationEmbeddings import ICLRetrieverTranslationEmbeddings
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import plac
 import json
@@ -29,7 +31,9 @@ def main(retriever_name: str, train_file: str, test_file: str, output_file: str,
     with open(train_file, 'r') as f:
         train_data = [json.loads(line) for line in f]
 
-    retriever_dict = {"BM25": ICLRetriever}
+    retriever_dict = {"BM25": ICLRetrieverBM25,
+                      "Embeddings": ICLRetrieverEmbeddings,
+                      "TranslationEmbeddings": ICLRetrieverTranslationEmbeddings}
     retriever = retriever_dict[retriever_name](train_data)
 
     with open(test_file, 'r') as f_in, open(output_file, 'w') as f_out:
