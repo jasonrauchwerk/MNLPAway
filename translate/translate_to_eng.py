@@ -4,12 +4,13 @@ import torch
 import pandas as pd
 import json
 import glob
+import gc
 
 model_name = 'facebook/nllb-200-distilled-600M'
 # model_name = 'facebook/nllb-200-1.3B'
 # model_name = 'facebook/nllb-200-3.3B'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-batch_size = 32
+batch_size = 8
 model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
 
 lang_id_map = {
@@ -47,7 +48,10 @@ def translate(data_df, src_lang):
         encoded = tokenizer(batch, padding=True, truncation=False, return_tensors='pt').to(device)
         generated_tokens = model.generate(**encoded, forced_bos_token_id=tokenizer.lang_code_to_id['eng_Latn'], max_length=400)
         translations += tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)
-    
+        del generated_tokens
+        torch.cuda.empty_cache()
+        gc.collect()
+
     data_df['text_english'] = translations
     return data_df
 
