@@ -65,7 +65,8 @@ def main(retriever_name: str, test_file: str, output_file: str, k: int, in_langu
                 else:
                     retriever = retrievers['english']
 
-            exemplars = retriever(text, int(k))
+            # exemplars = retriever(text, int(k))
+            exemplars = []
 
             inputs = tokenizer.encode(construct_prompt(text, exemplars), return_tensors="pt").to("cuda")
             outputs = model.generate(inputs, max_length = 4000)

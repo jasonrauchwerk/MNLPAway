@@ -1,1 +1,6 @@
-python -u main.py Random data/SubtaskA/subtaskA_train_multilingual_processed_combined.jsonl data/SubtaskA/outputs/subtaskA_train_multilingual_processed_combined.jsonl 1 False
+python -u main.py \
+    --retriever_name Random \
+    --test_file data/SubtaskA/subtaskA_dev_multilingual_processed_combined.jsonl \
+    --output_file data/SubtaskA/outputs/subtaskA_dev_multilingual_processed_combined.jsonl \
+    --k 1 \
+    --in_language False
