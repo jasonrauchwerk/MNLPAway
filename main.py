@@ -4,6 +4,8 @@ import re
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import plac
 from tqdm import tqdm
+import torch
+import gc
 
 from retrievers.ICLRetrieverBM25 import ICLRetrieverBM25Monolingual, ICLRetrieverBM25Translated
 from retrievers.ICLRetrieverRandom import ICLRetrieverRandom
@@ -29,6 +31,7 @@ def extract_label(text):
 
 def main(retriever_name: str, test_file: str, output_file: str, k: int, in_language: bool):
     in_language = False
+    # checkpoint = "bigscience/bloomz-1b7"
     checkpoint = "bigscience/bloomz-3b"
     tokenizer = AutoTokenizer.from_pretrained(checkpoint)
     model = AutoModelForCausalLM.from_pretrained(checkpoint, torch_dtype="auto", device_map="auto")
@@ -54,8 +57,13 @@ def main(retriever_name: str, test_file: str, output_file: str, k: int, in_langu
             train_data = [json.loads(line) for line in f]
         retriever = retriever_dict[retriever_name](train_data)
 
+    cnt = 0
+    with open(test_file, 'r') as f_in:
+        for line in f_in: 
+            cnt += 1
+
     with open(test_file, 'r') as f_in, open(output_file, 'w') as f_out:
-        for line in tqdm(f_in):
+        for line in tqdm(f_in, total=cnt, ncols=100):
             datum = json.loads(line)
             text = datum['text']
 
@@ -65,12 +73,13 @@ def main(retriever_name: str, test_file: str, output_file: str, k: int, in_langu
                 else:
                     retriever = retrievers['english']
 
-            # exemplars = retriever(text, int(k))
-            exemplars = []
-
-            inputs = tokenizer.encode(construct_prompt(text, exemplars), return_tensors="pt").to("cuda")
-            outputs = model.generate(inputs, max_length = 4000)
-            response = tokenizer.decode(outputs[0])
+            exemplars = retriever(text, int(k))
+            # exemplars = []
+            
+            with torch.inference_mode():
+                inputs = tokenizer.encode(construct_prompt(text, exemplars), return_tensors="pt").to("cuda")
+                outputs = model.generate(inputs, max_length = 4000)
+                response = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
             label = extract_label(response)
             f_out.write(json.dumps({"id": datum['id'], "label": label}) + "\n")
