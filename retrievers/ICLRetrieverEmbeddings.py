@@ -18,7 +18,7 @@ class ICLRetrieverEmbeddings(ICLRetrieverBase):
         super().__init__(data)
         self.data             = data
         self.corpus_label_map = {datum['text']:(datum['label']) for datum in data}
-        self.corpus_embedding_map = {datum['embedding']:(datum['text']) for datum in data}
+        self.corpus_embedding_map = {datum['embedding']: datum['text'] for datum in data}
         self.data_embedding         = [datum['embedding'] for datum in data]
         
 
