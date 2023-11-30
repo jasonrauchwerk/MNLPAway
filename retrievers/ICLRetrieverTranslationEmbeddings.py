@@ -31,8 +31,8 @@ class ICLRetrieverTranslationEmbeddings(ICLRetrieverBase):
         super().__init__(data)
         self.data             = data
         self.corpus_label_map = {datum['text']:(datum['label']) for datum in data}
-        self.corpus_embedding_map = {tuple(datum['text_english_embeddings']):(datum['text']) for datum in data}
-        self.data_embedding         = [datum['embedding'] for datum in data]
+        self.corpus_embedding_map = {tuple(datum['text_english_embeddings']):datum['text'] for datum in data}
+        self.data_embedding         = [datum['text_english_embeddings'] for datum in data]
     
     def _gen_embeddings(self, sentence):
         model = SentenceTransformer(embeddings_model_name).to(device) 

@@ -19,7 +19,7 @@ class ICLRetrieverEmbeddings(ICLRetrieverBase):
         self.data             = data
         self.corpus_label_map = {datum['text']:(datum['label']) for datum in data}
         self.corpus_embedding_map = {tuple(datum['text_embeddings']): datum['text'] for datum in data}
-        self.data_embedding         = [datum['embedding'] for datum in data]
+        self.data_embedding         = [datum['text_embeddings'] for datum in data]
         
 
     def gen_embeddings(self, sentence):
