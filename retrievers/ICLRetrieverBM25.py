@@ -15,9 +15,9 @@ class ICLRetrieverBM25Monolingual(ICLRetrieverBase):
         self.tokenize_func    = self.tokenizer.tokenize
         self.bm25             = BM25Okapi(self.corpus, self.tokenize_func)
     
-    def __call__(self, input_sentence: str, k: int) -> list[tuple[str, int]]:
+    def __call__(self, datum, input_sentence: str, k: int) -> list[tuple[str, int]]:
         retrieved_documents = self.bm25.get_top_n(self.tokenize_func(input_sentence), self.corpus, k)
-        return [(document, self.corpus_label_map[document]) for document in retrieved_documents]
+        return datum, input_sentence, [(document, self.corpus_label_map[document]) for document in retrieved_documents]
 
 class ICLRetrieverBM25Translated(ICLRetrieverBase):
 
@@ -30,6 +30,6 @@ class ICLRetrieverBM25Translated(ICLRetrieverBase):
         self.tokenize_func    = self.tokenizer.tokenize
         self.bm25             = BM25Okapi(self.corpus, self.tokenize_func)
     
-    def __call__(self, input_sentence: str, k: int) -> list[tuple[str, int]]:
+    def __call__(self, datum, input_sentence: str, k: int) -> list[tuple[str, int]]:
         retrieved_documents = self.bm25.get_top_n(self.tokenize_func(input_sentence), self.corpus, k)
-        return [(document, self.corpus_label_map[document]) for document in retrieved_documents]
+        return datum, input_sentence, [(document, self.corpus_label_map[document]) for document in retrieved_documents]

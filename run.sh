@@ -1,6 +1,6 @@
-# BM25Monolingual BM25Translated Embeddings TranslationEmbeddings
+# "Random" "BM25Monolingual" "BM25Translated" "Embeddings" "TranslationEmbeddings"
 
-for retriever in "Embeddings"
+for retriever in "BM25Monolingual" "BM25Translated" "Embeddings" "TranslationEmbeddings"
 do
     echo $retriever
     mkdir -p data/SubtaskA/outputs/$retriever

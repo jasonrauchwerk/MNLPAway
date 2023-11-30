@@ -27,7 +27,7 @@ class ICLRetrieverEmbeddings(ICLRetrieverBase):
         embeddings = model.encode(sentence)
         return embeddings
     
-    def __call__(self, input_sentence: str, k: int, ):# -> list[tuple[str, int]]:
+    def __call__(self, datum, input_sentence: str, k: int, ):# -> list[tuple[str, int]]:
         
         input_embeddings = self.gen_embeddings([input_sentence])
         input_embeddings = np.array(input_embeddings)
@@ -48,4 +48,4 @@ class ICLRetrieverEmbeddings(ICLRetrieverBase):
                 (text, self.corpus_label_map(text))
             )
         
-        return result
+        return datum, input_sentence, result

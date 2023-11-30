@@ -13,17 +13,6 @@ embeddings_model_name = 'sentence-transformers/stsb-xlm-r-multilingual'
 translation_model_name = 'facebook/nllb-200-3.3B'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-lang_id_map = {
-    'arabic'     : 'acm_Arab',
-    'russian'    : 'rus_Cryl',
-    'chinese'    : 'zho_Hans',
-    'indonesian' : 'ind_Latn',
-    'urdu'       : 'urd_Arab',
-    'bulgarian'  : 'bul_Cyrl',
-    'german'     : 'deu_Latn',
-}
-
-
 class ICLRetrieverTranslationEmbeddings(ICLRetrieverBase):
     # topk translated embeddings
     
@@ -33,6 +22,16 @@ class ICLRetrieverTranslationEmbeddings(ICLRetrieverBase):
         self.corpus_label_map = {datum['text']:(datum['label']) for datum in data}
         self.corpus_embedding_map = {tuple(datum['text_english_embeddings']):datum['text'] for datum in data}
         self.data_embedding         = [datum['text_english_embeddings'] for datum in data]
+        self.lang_id_map = {
+            'arabic'     : 'acm_Arab',
+            'russian'    : 'rus_Cryl',
+            'chinese'    : 'zho_Hans',
+            'indonesian' : 'ind_Latn',
+            'urdu'       : 'urd_Arab',
+            'bulgarian'  : 'bul_Cyrl',
+            'german'     : 'deu_Latn',
+            'english'    : 'eng_Latn',
+        }
     
     def _gen_embeddings(self, sentence):
         model = SentenceTransformer(embeddings_model_name).to(device) 
@@ -42,14 +41,14 @@ class ICLRetrieverTranslationEmbeddings(ICLRetrieverBase):
     def _translate(self, input_sentence, input_language):
         model = AutoModelForSeq2SeqLM.from_pretrained(translation_model_name).to(device)
         tokenizer = AutoTokenizer.from_pretrained(
-                translation_model_name, src_lang=lang_id_map[input_language]
+                translation_model_name, src_lang=self.lang_id_map[input_language]
             )
         inputs = tokenizer(input_sentence, return_tensors='pt').to(device)
         translated_tokens = model.generate(**inputs, forced_bos_token_id=tokenizer.lang_code_to_id['eng_Latn'], max_length=400)
         translated_sentence = tokenizer.batch_decode(translated_tokens, skip_special_tokens=True)[0]
         return translated_sentence
     
-    def __call__(self, input_sentence: str, k: int, input_language: str):# -> list[tuple[str, int]]:
+    def __call__(self, datum, input_sentence: str, k: int):# -> list[tuple[str, int]]:
         '''
         Args
             input_sentence (str): the sentence for inference
@@ -59,6 +58,7 @@ class ICLRetrieverTranslationEmbeddings(ICLRetrieverBase):
                                     'bulgarian','german','english']
                             
         '''
+        input_language = datum['source'] if datum['source'] in self.lang_id_map else 'english'
         input_embeddings = self._gen_embeddings([self._translate(input_sentence, input_language)])
         input_embeddings = np.array(input_embeddings)
         self.data_embedding = np.array(self.data_embedding)
@@ -78,4 +78,4 @@ class ICLRetrieverTranslationEmbeddings(ICLRetrieverBase):
                 (text, self.corpus_label_map(text))
             )
         
-        return result
+        return datum, input_sentence, result

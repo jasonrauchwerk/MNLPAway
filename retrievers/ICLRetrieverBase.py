@@ -14,6 +14,6 @@ class ICLRetrieverBase:
         # possible values of source: {'arxiv', 'wikihow', 'reddit', 'chinese', 'peerread', 'indonesian', 'bulgarian', 'wikipedia', 'urdu'}
         pass
     
-    def __call__(self, input_sentence: str, k: int):# -> list[tuple[str, int]]:
+    def __call__(self, datum, input_sentence: str, k: int):# -> list[tuple[str, int]]:
         # returns [(text1, label1), (text2, label2), ..., (textk, labelk)]
         raise NotImplementedError

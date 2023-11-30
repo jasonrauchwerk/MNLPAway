@@ -10,6 +10,6 @@ class ICLRetrieverRandom(ICLRetrieverBase):
         self.corpus_label_map = {datum['text']:datum['label'] for datum in data}
         self.corpus           = [datum['text'] for datum in data]
     
-    def __call__(self, input_sentence: str, k: int) -> list[tuple[str, int]]:
+    def __call__(self, datum, input_sentence: str, k: int) -> list[tuple[str, int]]:
         retrieved_documents = random.sample(self.corpus, k)
-        return [(document, self.corpus_label_map[document]) for document in retrieved_documents]
+        return datum, input_sentence, [(document, self.corpus_label_map[document]) for document in retrieved_documents]
