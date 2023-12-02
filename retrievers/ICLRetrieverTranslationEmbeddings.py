@@ -58,9 +58,10 @@ class ICLRetrieverTranslationEmbeddings(ICLRetrieverBase):
                                     'bulgarian','german','english']
                             
         '''
-        input_language = datum['source'] if datum['source'] in self.lang_id_map else 'english'
-        input_embeddings = self._gen_embeddings([self._translate(input_sentence, input_language)])
-        input_embeddings = np.array(input_embeddings)
+        # input_language = datum['source'] if datum['source'] in self.lang_id_map else 'english'
+        # input_embeddings = self._gen_embeddings([self._translate(input_sentence, input_language)])
+        # input_embeddings = np.array(input_embeddings)
+        input_embeddings = np.array(datum['text_english_embeddings'])
         self.data_embedding = np.array(self.data_embedding)
         
         cosine_similarities = cosine_similarity(input_embeddings.reshape(1, -1), self.data_embedding)

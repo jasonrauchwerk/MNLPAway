@@ -29,8 +29,10 @@ class ICLRetrieverEmbeddings(ICLRetrieverBase):
     
     def __call__(self, datum, input_sentence: str, k: int, ):# -> list[tuple[str, int]]:
         
-        input_embeddings = self.gen_embeddings([input_sentence])
-        input_embeddings = np.array(input_embeddings)
+        # input_embeddings = self.gen_embeddings([input_sentence])
+        # input_embeddings = np.array(input_embeddings)
+        
+        input_embeddings = np.array(datum['text_embeddings'])
         self.data_embedding = np.array(self.data_embedding)
         
         cosine_similarities = cosine_similarity(input_embeddings.reshape(1, -1), self.data_embedding)
