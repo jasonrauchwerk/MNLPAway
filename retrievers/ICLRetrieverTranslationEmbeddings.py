@@ -66,9 +66,10 @@ class ICLRetrieverTranslationEmbeddings(ICLRetrieverBase):
         
         cosine_similarities = cosine_similarity(input_embeddings.reshape(1, -1), self.data_embedding)
         
+        print("Cosine Similarity Calculated")
         cs_embedding_list = []
         for (cs,embedding) in zip(cosine_similarities[0], self.data_embedding):
-            cs_embedding_list.append(cs, embedding)
+            cs_embedding_list.append((cs, embedding))
         
         cs_embedding_list = sorted(cs_embedding_list, key = lambda x:x[0])
         
