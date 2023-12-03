@@ -47,7 +47,7 @@ class ICLRetrieverEmbeddings(ICLRetrieverBase):
                 if cs > max_cs:
                     max_cs_embedding = (cs, embedding)
                     max_cs = cs
-            text = max_cs_embedding[1]
+            text = self.corpus_embedding_map(max_cs_embedding[1])
             result = []
             result.append(text, self.corpus_label_map(text))
                     
