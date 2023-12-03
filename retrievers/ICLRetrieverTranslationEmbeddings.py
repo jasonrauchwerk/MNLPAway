@@ -71,7 +71,7 @@ class ICLRetrieverTranslationEmbeddings(ICLRetrieverBase):
         for (cs,embedding) in zip(cosine_similarities[0], self.data_embedding):
             cs_embedding_list.append((cs, embedding))
         
-        cs_embedding_list = sorted(cs_embedding_list, key = lambda x:x[0])
+        cs_embedding_list = sorted(cs_embedding_list, key = lambda x:-x[0])
         
         result = []
         for i in cs_embedding_list[:k]:
