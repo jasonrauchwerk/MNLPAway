@@ -9,10 +9,10 @@ with open(sys.argv[1], 'r') as f:
         j = json.loads(line)
         data[(j['source'], j['label'])].append(line)
 
-for _, li in data:
+for _, li in data.items():
     random.shuffle(li)
 
 with open(sys.argv[2], 'w') as f:
-    for _, li in data:
+    for _, li in data.items():
         for line in li[::4]:
             f.write(line)
