@@ -21,7 +21,7 @@ class ICLRetrieverTranslationEmbeddings(ICLRetrieverBase):
         self.data             = data
         self.corpus_label_map = {datum['text']:(datum['label']) for datum in data}
         self.corpus_embedding_map = {tuple(datum['text_english_embeddings']):datum['text'] for datum in data}
-        self.data_embedding         = [datum['text_english_embeddings'] for datum in data]
+        self.data_embedding         = np.array([datum['text_english_embeddings'] for datum in data])
         self.lang_id_map = {
             'arabic'     : 'acm_Arab',
             'russian'    : 'rus_Cryl',
@@ -61,23 +61,32 @@ class ICLRetrieverTranslationEmbeddings(ICLRetrieverBase):
         # input_language = datum['source'] if datum['source'] in self.lang_id_map else 'english'
         # input_embeddings = self._gen_embeddings([self._translate(input_sentence, input_language)])
         # input_embeddings = np.array(input_embeddings)
-        input_embeddings = np.array(datum['text_english_embeddings'])
-        self.data_embedding = np.array(self.data_embedding)
-        
+        input_embeddings = np.array(datum['text_english_embeddings'])        
         cosine_similarities = cosine_similarity(input_embeddings.reshape(1, -1), self.data_embedding)
         
-        print("Cosine Similarity Calculated")
-        cs_embedding_list = []
-        for (cs,embedding) in zip(cosine_similarities[0], self.data_embedding):
-            cs_embedding_list.append((cs, embedding))
+        if k == 1:
+            max_cs = -10
+            max_cs_embedding = None
+            for (cs,embedding) in zip(cosine_similarities[0], self.data_embedding):
+                if cs > max_cs:
+                    max_cs_embedding = (cs, embedding)
+                    max_cs = cs
+            text = self.corpus_embedding_map[tuple(max_cs_embedding[1])]
+            result = []
+            result.append((text, self.corpus_label_map[text]))
         
-        cs_embedding_list = sorted(cs_embedding_list, key = lambda x:-x[0])
-        
-        result = []
-        for i in cs_embedding_list[:k]:
-            text = self.corpus_embedding_map(i[1])
-            result.append(
-                (text, self.corpus_label_map(text))
-            )
+        else:        
+            cs_embedding_list = []
+            for (cs,embedding) in zip(cosine_similarities[0], self.data_embedding):
+                cs_embedding_list.append((cs, embedding))
+            
+            cs_embedding_list = sorted(cs_embedding_list, key = lambda x:-x[0])
+            
+            result = []
+            for i in cs_embedding_list[:k]:
+                text = self.corpus_embedding_map(i[1])
+                result.append(
+                    (text, self.corpus_label_map(text))
+                )
         
         return datum, input_sentence, result
