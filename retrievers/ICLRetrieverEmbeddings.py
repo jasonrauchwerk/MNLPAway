@@ -32,13 +32,13 @@ class ICLRetrieverEmbeddings(ICLRetrieverBase):
         
         # input_embeddings = self.gen_embeddings([input_sentence])
         # input_embeddings = np.array(input_embeddings)
-        start= time.time()
+        # start= time.time()
         input_embeddings = np.array(datum['text_embeddings'])
         # self.data_embedding = np.array(self.data_embedding)
-        print(time.time() - start)
+        # print(time.time() - start)
         cosine_similarities = cosine_similarity(input_embeddings.reshape(1, -1), self.data_embedding)
-        print("Cosine Similarity Calculated")
-        print(time.time() - start)
+        # print("Cosine Similarity Calculated")
+        # print(time.time() - start)
         
         if k == 1:
             max_cs = -10
@@ -47,9 +47,9 @@ class ICLRetrieverEmbeddings(ICLRetrieverBase):
                 if cs > max_cs:
                     max_cs_embedding = (cs, embedding)
                     max_cs = cs
-            text = self.corpus_embedding_map(max_cs_embedding[1])
+            text = self.corpus_embedding_map[tuple(max_cs_embedding[1])]
             result = []
-            result.append(text, self.corpus_label_map(text))
+            result.append(text, self.corpus_label_map[text])
                     
         else:
             cs_embedding_list = []
@@ -60,9 +60,9 @@ class ICLRetrieverEmbeddings(ICLRetrieverBase):
             
             result = []
             for i in cs_embedding_list[:k]:
-                text = self.corpus_embedding_map(i[1])
+                text = self.corpus_embedding_map[tuple(i[1])]
                 result.append(
-                    (text, self.corpus_label_map(text))
+                    (text, self.corpus_label_map[text])
                 )
         
         return datum, input_sentence, result
