@@ -11,8 +11,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import concurrent
 
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-MAX_THREADS = 100
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+MAX_THREADS = 1
 
 from retrievers.ICLRetrieverBM25 import ICLRetrieverBM25Monolingual, ICLRetrieverBM25Translated
 from retrievers.ICLRetrieverRandom import ICLRetrieverRandom
