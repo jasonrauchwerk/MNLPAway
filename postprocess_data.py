@@ -11,9 +11,9 @@ def main(input_file: str, output_file: str):
             elif "1" in resp:
                 datum['label'] = 1
             elif "yes" in resp:
-                datum['label'] = 0
-            elif "no" in resp:
                 datum['label'] = 1
+            elif "no" in resp:
+                datum['label'] = 0
             elif "human" in resp:
                 datum['label'] = 0
             elif "computer" in resp:
