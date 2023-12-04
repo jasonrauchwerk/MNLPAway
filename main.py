@@ -12,7 +12,7 @@ import concurrent
 
 import os
 os.environ['CUDA_VISIBLE_DEVICES'] = '2'
-MAX_THREADS = 1
+MAX_THREADS = 128
 
 from retrievers.ICLRetrieverBM25 import ICLRetrieverBM25Monolingual, ICLRetrieverBM25Translated
 from retrievers.ICLRetrieverRandom import ICLRetrieverRandom
