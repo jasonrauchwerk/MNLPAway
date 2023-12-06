@@ -1,7 +1,7 @@
 import json
 import re
 
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoModelForSeq2SeqLM, AutoTokenizer
 import plac
 from tqdm import tqdm
 import torch
@@ -11,8 +11,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import concurrent
 
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '2'
-MAX_THREADS = 128
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+MAX_THREADS = 64
 
 from retrievers.ICLRetrieverBM25 import ICLRetrieverBM25Monolingual, ICLRetrieverBM25Translated
 from retrievers.ICLRetrieverRandom import ICLRetrieverRandom
@@ -46,10 +46,11 @@ def extract_label(text):
 
 def main(retriever_name: str, test_file: str, output_file: str, k: int, in_language: bool):
     in_language = False
-    checkpoint = "bigscience/bloomz-1b7"
+    checkpoint = "bigscience/mt0-large"
+    # checkpoint = "bigscience/bloomz-1b7"
     # checkpoint = "bigscience/bloomz-3b"
     tokenizer = AutoTokenizer.from_pretrained(checkpoint)
-    model = AutoModelForCausalLM.from_pretrained(checkpoint, torch_dtype="auto", device_map="auto")
+    model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint, torch_dtype="auto", device_map="auto")
     print("Model and Tokenizer Loaded")
 
     retriever_dict = {"BM25Monolingual"       : ICLRetrieverBM25Monolingual,
